@@ -1,7 +1,12 @@
 import React, { useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
-import * as facemesh from "@tensorflow-models/face-landmarks-detection";
 import Webcam from "react-webcam";
+import "./App.css"
+import '@mediapipe/face_mesh';
+import '@tensorflow/tfjs-core';
+// Register WebGL backend.
+import '@tensorflow/tfjs-backend-webgl';
+import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 
 const inputResolution = {
   width: 1280,
@@ -26,34 +31,49 @@ function App() {
     setLoaded(true);
   };
 
+  const runFacemesh = async () => {
+    const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
+    const detectorConfig = {
+      runtime: 'mediapipe', // or 'tfjs'
+      solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
+    }
+    const detector = await faceLandmarksDetection.createDetector(model, detectorConfig);
+    const faces = await detector.estimateFaces(image, estimationConfig);
+  }
+
   return (
-    <div>
+    <div className="App">
+    <header className="App-header">
       <Webcam
-        ref={webcamRef}
-        audio={false}
-        width={inputResolution.width}
-        height={inputResolution.height}
-        videoConstraints={videoConstraints}
-        onLoadedData={handleVideoLoad}
-        style={{
-          position: 'absolute',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          left: 0, right: 0,
-          zIndex: 9,
-          width: 640,
-          height: 480
-
-
-        }}
-      />
-      {/* <canvas
-        ref={canvasRef}
-        width={inputResolution.width}
-        height={inputResolution.height}
-        style={{ position: "absolute" }}
-      /> */}
-      {!loaded && <header>Loading...</header>}
+          ref={webcamRef}
+          audio={false}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            zindex: 9,
+            width: 640,
+            height: 480,
+          }}
+        />
+      <canvas
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            zindex: 9,
+            width: 640,
+            height: 480,
+          }}
+        />
+      </header>
     </div>
   );
 }
