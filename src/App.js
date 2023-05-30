@@ -1,20 +1,20 @@
 import React, { useRef, useState } from "react";
-import "@tensorflow/tfjs";
-// Register WebGL backend.
-import "@tensorflow/tfjs-backend-webgl";
-import "@mediapipe/face_mesh";
+import * as tf from "@tensorflow/tfjs";
+import * as facemesh from "@tensorflow-models/face-landmarks-detection";
 import Webcam from "react-webcam";
 
 const inputResolution = {
-  width: 1080,
-  height: 900,
+  width: 1280,
+  height: 720,
 };
 const videoConstraints = {
   width: inputResolution.width,
   height: inputResolution.height,
-  facingMode: "user",
 };
+
 function App() {
+
+  const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -25,12 +25,19 @@ function App() {
     //detect here
     setLoaded(true);
   };
+
   return (
-    <div>
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      height: "100%"
+    }}>
       <Webcam
+        ref={webcamRef}
+        audio={false}
         width={inputResolution.width}
         height={inputResolution.height}
-        style={{ visibility: "hidden", position: "absolute" }}
         videoConstraints={videoConstraints}
         onLoadedData={handleVideoLoad}
       />
@@ -40,7 +47,7 @@ function App() {
         height={inputResolution.height}
         style={{ position: "absolute" }}
       />
-      {loaded ? <></> : <header>Loading...</header>}
+      {!loaded && <header>Loading...</header>}
     </div>
   );
 }
