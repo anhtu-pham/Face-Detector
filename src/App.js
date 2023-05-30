@@ -27,12 +27,7 @@ function App() {
   };
 
   return (
-    <div style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100%"
-    }}>
+    <div>
       <Webcam
         ref={webcamRef}
         audio={false}
@@ -40,13 +35,24 @@ function App() {
         height={inputResolution.height}
         videoConstraints={videoConstraints}
         onLoadedData={handleVideoLoad}
+        style={{
+          position: 'absolute',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          left: 0, right: 0,
+          zIndex: 9,
+          width: 640,
+          height: 480
+
+
+        }}
       />
-      <canvas
+      {/* <canvas
         ref={canvasRef}
         width={inputResolution.width}
         height={inputResolution.height}
         style={{ position: "absolute" }}
-      />
+      /> */}
       {!loaded && <header>Loading...</header>}
     </div>
   );
