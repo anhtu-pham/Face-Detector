@@ -31,12 +31,13 @@ function App() {
     setLoaded(true);
   };
 
-  const runFacemesh = async () => {
-    const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
+  const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
     const detectorConfig = {
       runtime: 'mediapipe', // or 'tfjs'
       solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
     }
+
+  const runFacemesh = async () => {   
     const detector = await faceLandmarksDetection.createDetector(model, detectorConfig);
     const faces = await detector.estimateFaces(image, estimationConfig);
   }
