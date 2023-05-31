@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import Webcam from "react-webcam";
 import "./App.css"
 import '@mediapipe/face_mesh';
@@ -7,14 +7,10 @@ import '@tensorflow/tfjs-core';
 import '@tensorflow/tfjs-backend-webgl';
 import {runDetector} from "./detector"
 
-const inputResolution = {
-  width: 1280,
-  height: 720,
-};
-const videoConstraints = {
-  width: inputResolution.width,
-  height: inputResolution.height,
-};
+// const inputResolution = {
+//   width: 1280,
+//   height: 720,
+// };
 
 function App() {
 
@@ -26,15 +22,11 @@ function App() {
     const video = videoNode.target;
     if (video.readyState !== 4) return;
     if (loaded) return;
-    //detect here
-    setLoaded(true);
+    runDetector(video, canvasRef.current); //running detection on video
+    setLoaded(true)
   };
 
-  const onUserMedia = () => {
-    console.log("Media stream:");
-  }
-
-  useEffect(()=>{onUserMedia()}, []);
+  // useEffect(handleVideoLoad(), []);
 
   return (
     <div className="App">
@@ -42,7 +34,7 @@ function App() {
       <Webcam
           ref={webcamRef}
           audio={false}
-          // onUserMedia={onUserMedia}
+          onLoadedData={handleVideoLoad}
           style={{
             position: "absolute",
             marginLeft: "auto",

@@ -10,8 +10,10 @@ export const runDetector = async (video, canvas) => {
         detectorConfig
     );
     const detect = async (net) => {
+        // console.log("running detection")
         const estimationConfig = { flipHorizontal: false };
         const faces = await net.estimateFaces(video, estimationConfig);
+        // drawMesh(faces)
         detect(detector)
     };
     detect(detector);
