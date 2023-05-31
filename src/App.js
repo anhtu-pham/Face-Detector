@@ -1,12 +1,11 @@
-import React, { useRef, useState } from "react";
-import * as tf from "@tensorflow/tfjs";
+import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import "./App.css"
 import '@mediapipe/face_mesh';
 import '@tensorflow/tfjs-core';
 // Register WebGL backend.
 import '@tensorflow/tfjs-backend-webgl';
-import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
+import {runDetector} from "./detector"
 
 const inputResolution = {
   width: 1280,
@@ -31,16 +30,11 @@ function App() {
     setLoaded(true);
   };
 
-  const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
-    const detectorConfig = {
-      runtime: 'mediapipe', // or 'tfjs'
-      solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
-    }
-
-  const runFacemesh = async () => {   
-    const detector = await faceLandmarksDetection.createDetector(model, detectorConfig);
-    const faces = await detector.estimateFaces(image, estimationConfig);
+  const onUserMedia = () => {
+    console.log("Media stream:");
   }
+
+  useEffect(()=>{onUserMedia()}, []);
 
   return (
     <div className="App">
@@ -48,6 +42,7 @@ function App() {
       <Webcam
           ref={webcamRef}
           audio={false}
+          // onUserMedia={onUserMedia}
           style={{
             position: "absolute",
             marginLeft: "auto",
