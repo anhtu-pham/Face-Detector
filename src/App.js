@@ -5,16 +5,18 @@ import '@mediapipe/face_mesh';
 import '@tensorflow/tfjs-core';
 // Register WebGL backend.
 import '@tensorflow/tfjs-backend-webgl';
-import {runDetector} from "./detector"
+import { runDetector } from "./detector"
 
-// const inputResolution = {
-//   width: 1280,
-//   height: 720,
-// };
+const inputResolution = {
+  width: 1280,
+  height: 720,
+};
+const videoConstraints = {
+  width: inputResolution.width,
+  height: inputResolution.height,
+};
 
 function App() {
-
-  const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -22,19 +24,21 @@ function App() {
     const video = videoNode.target;
     if (video.readyState !== 4) return;
     if (loaded) return;
+    const imageElement = new Image(inputResolution.width, inputResolution.height);
+    imageElement.crossOrigin = "anonymous";
+    imageElement.srcObject = video;
     runDetector(video, canvasRef.current); //running detection on video
     setLoaded(true)
   };
 
-  // useEffect(handleVideoLoad(), []);
-
   return (
     <div className="App">
-    <header className="App-header">
-      <Webcam
-          ref={webcamRef}
-          audio={false}
+      <header className="App-header">
+        <Webcam
           onLoadedData={handleVideoLoad}
+          width={inputResolution.width}
+          height={inputResolution.height}
+          videoConstraints={videoConstraints}
           style={{
             position: "absolute",
             marginLeft: "auto",
@@ -43,11 +47,10 @@ function App() {
             right: 0,
             textAlign: "center",
             zindex: 9,
-            width: 640,
-            height: 480,
           }}
         />
-      <canvas
+
+        <canvas
           ref={canvasRef}
           style={{
             position: "absolute",
@@ -57,9 +60,9 @@ function App() {
             right: 0,
             textAlign: "center",
             zindex: 9,
-            width: 640,
-            height: 480,
           }}
+          width={inputResolution.width}
+          height={inputResolution.height}
         />
       </header>
     </div>
